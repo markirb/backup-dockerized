@@ -1,0 +1,8 @@
+GPG_KEY='disabled'
+GPG_PW=''
+
+TARGET='file:///backup'
+SOURCE='/source'
+
+MAX_AGE=1M
+MAX_FULL_BACKUPS=2

@@ -1,0 +1,26 @@
+version: '2.1'
+services:
+  duply: #only for build (will be left as stopped container, alternativ build only config
+    build: ./data/Dockerfiles/backup_duply
+    image: backup_duply
+  backup-monitor: #could also be a cronjob on backup-scheduler, but as its job is to control the cron, separate is better, mailcow-watchdog code
+    image: backup_scheduler
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/conf/backup:/etc/backup
+    restart: always
+    environment:
+      - TZ=${TZ}
+      - USE_WATCHDOG=${USE_WATCHDOG:-n}
+      - WATCHDOG_NOTIFY_EMAIL=${WATCHDOG_NOTIFY_EMAIL}
+      - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
+  backup-scheduler:
+    build: ./data/Dockerfiles/backup_scheduler
+    image: backup_scheduler
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/conf/backup/:/etc/backup
+    environment:
+      - TZ=${TZ}
+    command: crond -d 8 -f

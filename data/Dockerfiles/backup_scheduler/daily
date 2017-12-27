@@ -1,0 +1,6 @@
+#!/bin/bash
+bkps=($(/docker_backup.py list_all))
+
+for i in "${bkps[@]}";  do
+  /docker_backup.py $i backup
+done
