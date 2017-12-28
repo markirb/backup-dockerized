@@ -6,7 +6,7 @@ if [[ "${USE_WATCHDOG}" =~ ^([nN][oO]|[nN])+$ ]]; then
   exec $(readlink -f "$0")
 fi
 
-BACKUP_PROFILES=($(/docker_backup.py list_all))
+BACKUP_PROFILES=($(/docker_backup.py list))
 
 trap "exit" INT TERM
 trap "kill 0" EXIT

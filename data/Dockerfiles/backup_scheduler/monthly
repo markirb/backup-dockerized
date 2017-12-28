@@ -1,5 +1,5 @@
 #!/bin/bash
-bkps=($(/docker_backup.py list_all))
+bkps=($(/docker_backup.py list))
 
 for i in "${bkps[@]}";  do
   /docker_backup.py $i purge_full --force

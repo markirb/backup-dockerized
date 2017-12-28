@@ -1,7 +1,8 @@
-GPG_KEY='disabled'
-GPG_PW=''
+#set via env
+#GPG_KEY='disabled'
+#GPG_PW=''
+#TARGET='file:///backup'
 
-TARGET='file:///backup'
 SOURCE='/source'
 
 MAX_AGE=1M

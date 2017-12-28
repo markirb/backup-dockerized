@@ -8,6 +8,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./data/conf/backup:/etc/backup
+      - crypt-vol-1:/root/.gnupg
     restart: always
     environment:
       - TZ=${TZ}
@@ -21,6 +22,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./data/conf/backup/:/etc/backup
+      - crypt-vol-1:/root/.gnupg
     environment:
       - TZ=${TZ}
     command: crond -d 8 -f
+volumes:
+  crypt-vol-1:

@@ -6,7 +6,12 @@ RUN apk add --update --no-cache \
 	    rsync \
 	    openssh-client \
 	    duply \
-	    py-pip && pip install fasteners dropbox
+	    gnupg \
+	    py-pip && pip install \
+	    fasteners \
+	    dropbox==6.9.0 \
+	    boto
+
 
 COPY conf /etc/duply
 RUN chmod -R 700 /etc/duply

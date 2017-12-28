@@ -1,4 +1,4 @@
-FROM python:2-alpine
+FROM python:2-alpine3.7
 
 RUN apk add --update \
 	&& apk add --no-cache curl \
@@ -12,12 +12,19 @@ RUN apk add --update \
 	perl-mime-lite \
 	perl-term-readkey \
 	tini \
-	&& pip install docker pyyaml && curl https://raw.githubusercontent.com/mludvig/smtp-cli/v3.8/smtp-cli -o /smtp-cli \
+	gnupg \
+	pwgen \
+	&& pip install docker pyyaml \
+	&& curl https://raw.githubusercontent.com/mludvig/smtp-cli/v3.8/smtp-cli -o /smtp-cli \
 	&& chmod +x smtp-cli
 
 COPY monitor.sh /monitor.sh
 COPY docker_backup.py /docker_backup.py
 COPY duply_check.py /duply_check.py
+
+COPY gpg gpg
+COPY gpg.sh /gpg.sh
+RUN chmod +x /gpg.sh
 
 COPY crontab /var/spool/cron/crontabs/root
 
