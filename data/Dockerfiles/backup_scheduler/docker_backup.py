@@ -14,7 +14,7 @@ config_file = '/etc/backup/conf.yml'
 self_id = os.environ.get("HOSTNAME")
 
 if len(sys.argv) < 2:
-    print("No arguments given, usage: list_all, check_config, ...")
+    print("No arguments given, usage: list, check, [profile] [duplycmd]...")
     sys.exit(1)
 name = sys.argv[1]
 
@@ -42,7 +42,7 @@ docker_client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 i_img = "backup_duply"
 
 def get_crypt_volume( docker_client, docker_id):
-    #get crypt volume name of container
+    #get volume name of container, ugly hack...
     try:
         i_self = docker_client.containers.get(docker_id)
     except:
@@ -75,8 +75,7 @@ if name in config:
     #mount crypt container if available
     i_crypt =  get_crypt_volume( docker_client, self_id)
     if i_crypt != None:
-        #make sure the volume is there
-        docker_client.volumes.get(i_crypt)
+        docker_client.volumes.get(i_crypt) #check if volume exists
         i_volumes[str(i_crypt)] = {'bind': '/root/.gnupg','mode': 'ro'}
 
     #in case of a file target we need to mount it
@@ -84,7 +83,7 @@ if name in config:
     if p.scheme == 'file':
         #rewrite target and mount folder to this location
         i_env['TARGET'] = "file:///backup"
-        assert p.netloc == '' #was no absolute path if this is true...
+        assert p.netloc == '' #was no absolute path if this is true, volumes are discouraged!
         i_volumes[p.path] = {'bind': '/backup/','mode': 'rw'}
 
     #set defaults if not yet set
@@ -120,11 +119,14 @@ if name in config:
             pw_tar.add(temp_name,arcname="/source/%s" % file_name)
             pw_tar.close()
             i_tar.seek(0)
-    else:
-        #source mount
+    else: #source is volume or directory
+        src_is_vol = not i_source.startswith('/')
+        if src_is_vol:
+            docker_client.volumes.get(i_source) #check if volume exists
+        #no way to check if dir exists...
         i_volumes[i_source] = {'bind': '/source/','mode': 'ro'}
 
-    #now launch the container, remove in case of an error
+    #now launch the container, remove afterwards or in case of an error
     try:
         container =  docker_client.containers.create(i_img, hostname=i_hostname, command=i_cmd, volumes=i_volumes, environment=i_env)
         if i_tar != None:
@@ -134,7 +136,7 @@ if name in config:
         for x in logs_gen:
             sys.stdout.write(x)
     except:
-        print("Error launching backup container, cleaning up")
+        print("Error launching backup container (directories might not exist), cleaning up")
     container.remove()
 else:
     print("Error: name '%s' not found in config file" % name)

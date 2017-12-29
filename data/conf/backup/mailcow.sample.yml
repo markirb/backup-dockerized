@@ -1,3 +1,4 @@
+# this example does a backup of ALL mailcow volumes and stores each backup under a subfolder, e.g. /mnt/backup/mailcow-crypt,...
 env:
   TARGET: '/mnt/backup'
 backup:

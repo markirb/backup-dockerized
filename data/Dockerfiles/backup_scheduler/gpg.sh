@@ -1,11 +1,14 @@
 #!/bin/bash
 
+#The MIT License (MIT)
+#Copyright (c) 2017 Jeroen Geusebroek
+
 KEY_TYPE='RSA'
 KEY_LENGTH='2048'
 SUBKEY_TYPE='RSA'
 SUBKEY_LENGTH='2048'
 NAME_REAL='Duply backup'
-NAME_EMAIL='duply@localhost'
+NAME_EMAIL='duply@crypt'
 PASSPHRASE='random' 
 
 if [ ! -e /root/.gnupg/gpg.conf ]; then
