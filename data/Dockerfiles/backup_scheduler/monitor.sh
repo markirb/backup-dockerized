@@ -40,7 +40,7 @@ while true; do
   sts=0
   for profile in "${BACKUP_PROFILES[@]}";  do
     log_msg "Checking backup for $profile"  
-    msg=$(./docker_backup.py $profile | ./duply_check.py)
+    msg=$(./docker_backup.py $profile status | ./duply_check.py)
     sts=$sts+$?
     log_msg "${profile} backup ${msg}"
     msg_acc="${msg_acc}

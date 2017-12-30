@@ -92,10 +92,13 @@ if name in config:
     i_env.setdefault('GPG_TTY','/dev/console')
 
     i_profile = 'backup'
-    i_cmd = "duply %s %s" % (i_profile,action)
+    i_cmd = "duply %s %s" % (i_profile,' '.join(sys.argv[2:]))
     i_mode = i_config.get('mode','default')
 
     i_tar = None
+    #redis dump
+    #elif i_mode == 'redisdump'
+    #    gen = i_dump.exec_run("sh -c 'exec redis-cli --rdb /tmp/dump.rdb >/dev/null 2>&1 && cat /tmp/dump.rdb && rm /tmp/dump.rdb'", stream=True)
     if i_mode == 'sqldump':
         if action != 'status':
             #do a sql dump
@@ -104,6 +107,8 @@ if name in config:
             except:
                 print("Container %s was not found" % i_source)
                 sys.exit(1)
+            #TODO: check for error
+            # exit code not available until this PR https://github.com/docker/docker-py/pull/1797
             gen = i_dump.exec_run("sh -c 'exec mysqldump --all-databases -uroot -p\"$MYSQL_ROOT_PASSWORD\"'", stream=True)
             
             file_name = "%s.sql" % i_source 
@@ -140,3 +145,4 @@ if name in config:
     container.remove()
 else:
     print("Error: name '%s' not found in config file" % name)
+    sys.exit(1)

@@ -25,15 +25,7 @@ I added the possibility to do these, up until now I only tested Dropbox with wor
 docker-compose build
 ```
 
-2. create and adjust your backup settings in `./conf/data/backup/conf.yml` 
-
-for mailcow example see [mailcow.sample.yml](../master/data/conf/backup/mailcow.sample.yml)
-
-for a dropbox online backup example with GPG see [dropbox.sample.yml](../master/data/conf/backup/dropbox.sample.yml)
-see also GPG section on how to create your key.
-
-if you set a global target folder, every backup creates a subfolder within
-
+2. create and adjust your backup settings in `./conf/data/backup/conf.yml` see [Configuration](#configuration) and [GPG](#gpg) for examples
 3. create and adjust ./env.conf (best is to copy your mailcow settings into env.sample.conf and rename it to env.conf)
 4. start everything with
 ```
@@ -62,8 +54,9 @@ Backups are done with one-off (ephemeral) docker containers running duply. All v
 The backup can be configured in `conf/data/backup/conf.yml` (there is a also a convenience symlink `./backup_conf.yml`)
 
 Examples:
-[mailcow.sample.yml](../master/data/conf/backup/mailcow.sample.yml)
-[dropbox.sample.yml](../master/data/conf/backup/dropbox.sample.yml)
+ + [mailcow.sample.yml](../master/data/conf/backup/mailcow.sample.yml)
+ + [dropbox.sample.yml](../master/data/conf/backup/dropbox.sample.yml)
+ + [s3.sample.yml](../master/data/conf/backup/s3.sample.yml)
 
 It looks like
 
@@ -100,15 +93,17 @@ For your own safety you will restore the contents to a newly created container, 
 You cannot and should not override ANY volumes for your own safety...
 When you're done, you can replace the volume in your docker-compose and restart your services.
 
-## GPG Key
+## GPG
 
-Generate a new GPG key with
+Generate a new GPG key pair with
 
 ```
 docker-compose exec backup-scheduler ./gpg.sh gen-key
 ```
 
 **Copy your random password and Key-ID for later use in env**
+
+Your Key-ID is the one listed after `ssb   rsa2048/`, if you use the other one you run into [this](https://superuser.com/questions/1193910/duplicity-duply-volume-was-signed-by-key-x-not-y-task-restore-failed-with)
 
 **You should also export your key and password and back it up somewhere safe with**
 
@@ -119,8 +114,8 @@ docker-compose exec backup-scheduler ./gpg.sh export-key
 Your conf.yml should look like:
 
 ```
-GPG_PW: '[KEY_PW]'
 GPG_KEY: '[KEY_ID]'
+GPG_PW: '[KEY_PW]'
 ```
 
 

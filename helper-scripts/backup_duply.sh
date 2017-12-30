@@ -6,4 +6,4 @@ then
   exit 1
 fi
 
-docker-compose exec backup-scheduler /docker_backup.py $1 $2
+docker-compose exec backup-scheduler /docker_backup.py "$@"

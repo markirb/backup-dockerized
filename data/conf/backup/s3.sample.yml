@@ -1,0 +1,7 @@
+env:
+  TARGET: 's3://s3.eu-central-1.amazonaws.com/[BUCKET]/'
+  AWS_ACCESS_KEY_ID: '[ID]'
+  AWS_SECRET_ACCESS_KEY: '[ACCESS_KEY]'
+backup:
+  'aws':
+    src: '[SOURCE]'
