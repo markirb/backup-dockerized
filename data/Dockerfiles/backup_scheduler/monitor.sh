@@ -6,8 +6,6 @@ if [[ "${USE_WATCHDOG}" =~ ^([nN][oO]|[nN])+$ ]]; then
   exec $(readlink -f "$0")
 fi
 
-BACKUP_PROFILES=($(/docker_backup.py list))
-
 trap "exit" INT TERM
 trap "kill 0" EXIT
 
@@ -36,6 +34,7 @@ function mail_error() {
 
 
 while true; do
+  BACKUP_PROFILES=($(/docker_backup.py list))
   msg_acc=""
   sts=0
   for profile in "${BACKUP_PROFILES[@]}";  do
