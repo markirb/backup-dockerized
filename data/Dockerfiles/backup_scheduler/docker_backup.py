@@ -108,8 +108,7 @@ if name in config:
                 print("Container %s was not found" % i_source)
                 sys.exit(1)
             #TODO: check for error
-            # exit code not available until this PR https://github.com/docker/docker-py/pull/1797
-            gen = i_dump.exec_run("sh -c 'exec mysqldump --all-databases -uroot -p\"$MYSQL_ROOT_PASSWORD\"'", stream=True)
+            (exit_code,gen) = i_dump.exec_run("sh -c 'exec mysqldump --all-databases -uroot -p\"$MYSQL_ROOT_PASSWORD\"'", stream=True)
             
             file_name = "%s.sql" % i_source 
             temp_name = "/tmp/%s" % file_name
